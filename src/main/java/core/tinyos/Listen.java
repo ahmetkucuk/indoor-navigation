@@ -1,20 +1,42 @@
 package core.tinyos;
 
 import core.model.LightIntensityResponse;
+import net.tinyos.message.Message;
+import net.tinyos.message.MessageListener;
+import net.tinyos.message.MoteIF;
 import net.tinyos.packet.BuildSource;
 import net.tinyos.packet.PacketSource;
+import net.tinyos.packet.PhoenixSource;
 import net.tinyos.util.Dump;
+import net.tinyos.util.Messenger;
 import net.tinyos.util.PrintStreamMessenger;
 
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Listen {
+public class Listen implements MessageListener{
 
 	private final CopyOnWriteArrayList<LightIntensityResponse> values = new CopyOnWriteArrayList<>();
 
-	private boolean isStarted = false;
 
+	public Listen() {
+		try {
+			PhoenixSource reader = BuildSource.makePhoenix("serial@/dev/ttyUSB0:telos", PrintStreamMessenger.err);
+			MoteIF mote = new MoteIF(reader);
+			mote.registerListener(new OscilloscopeMsg(), this);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void messageReceived(int i, Message message) {
+		if(message instanceof OscilloscopeMsg) {
+			OscilloscopeMsg oMessage = (OscilloscopeMsg)message;
+			values.add(oMessage.toLightIntensityResponse());
+		}
+	}
+/*
 	public void startInBackground() {
 		if(!isStarted) {
 			Runnable task = new Runnable() {
@@ -56,27 +78,13 @@ public class Listen {
 				lightIntensity.setId("Unknown");
 
 				values.add(lightIntensity);
-
-				String color = "Off";
-				if (light > 90) {
-					color = "Green";
-				}
-				if (light > 150) {
-					color = "Blue";
-				}
-				if (light > 250) {
-					color = "Red";
-				}
-
-				System.out.println(color + " : " + light);
-				System.out.flush();
 			}
 		}
 		catch (IOException e) {
 			System.err.println("Error on " + reader.getName() + ": " + e);
 		}
 	}
-
+*/
 	public CopyOnWriteArrayList<LightIntensityResponse> getValues() {
 		return values;
 	}

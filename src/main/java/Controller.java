@@ -15,7 +15,6 @@ public class Controller {
     private static final Listen listen = new Listen();
 
     public static void main(String[] args) {
-        listen.startInBackground();
         staticFiles.location("/public");
 
         redirect.get("/", "/main.html");
