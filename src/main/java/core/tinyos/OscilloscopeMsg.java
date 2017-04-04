@@ -11,8 +11,8 @@ import core.model.LightIntensityResponse;
 public class OscilloscopeMsg extends net.tinyos.message.Message {
 
     /** The default size of this message type in bytes. */
-    public static final int DEFAULT_MESSAGE_SIZE = 18;
-    public static final int NUMBER_OF_READINGS = 5;
+    public static final int DEFAULT_MESSAGE_SIZE = 16;
+    public static final int NUMBER_OF_READINGS = 3;
 
     /** The Active Message type associated with this message. */
     public static final int AM_TYPE = 147;
@@ -99,6 +99,9 @@ public class OscilloscopeMsg extends net.tinyos.message.Message {
             s += "  [id=0x"+Long.toHexString(get_id())+"]\n";
         } catch (ArrayIndexOutOfBoundsException aioobe) { /* Skip field */ }
         try {
+            s += "  [child=0x"+Long.toHexString(get_child_id())+"]\n";
+        } catch (ArrayIndexOutOfBoundsException aioobe) { /* Skip field */ }
+        try {
             s += "  [count=0x"+Long.toHexString(get_count())+"]\n";
         } catch (ArrayIndexOutOfBoundsException aioobe) { /* Skip field */ }
         try {
@@ -126,6 +129,11 @@ public class OscilloscopeMsg extends net.tinyos.message.Message {
         try {
             response.setId(get_id());
         } catch (ArrayIndexOutOfBoundsException aioobe) { /* Skip field */ }
+
+        try {
+            response.setChild(get_child_id());
+        } catch (ArrayIndexOutOfBoundsException aioobe) { /* Skip field */ }
+
         try {
             response.setCount(get_count());
         } catch (ArrayIndexOutOfBoundsException aioobe) { /* Skip field */ }
@@ -306,11 +314,26 @@ public class OscilloscopeMsg extends net.tinyos.message.Message {
     }
 
     /**
+     * Return the offset (in bits) of the field 'id'
+     */
+    public static int offsetBits_childId() {
+        return 7*16;
+    }
+
+    /**
      * Return the value (as a int) of the field 'id'
      */
     public int get_id() {
         return (int)getUIntBEElement(offsetBits_id(), 16);
     }
+
+    /**
+     * Return the value (as a int) of the field 'id'
+     */
+    public int get_child_id() {
+        return (int)getUIntBEElement(offsetBits_childId(), 16);
+    }
+
 
     /**
      * Set the value of the field 'id'

@@ -34,6 +34,7 @@ public class Listen implements MessageListener{
 		if(message instanceof OscilloscopeMsg) {
 			OscilloscopeMsg oMessage = (OscilloscopeMsg)message;
 			values.add(oMessage.toLightIntensityResponse());
+			System.out.println(oMessage);
 		}
 	}
 /*

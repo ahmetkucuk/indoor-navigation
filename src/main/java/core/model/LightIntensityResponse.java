@@ -10,6 +10,7 @@ public class LightIntensityResponse {
     private int version;
     private int interval;
     private int id;
+    private int child;
     private int count;
     private int[] readings;
     private long createdAt;
@@ -60,6 +61,14 @@ public class LightIntensityResponse {
 
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getChild() {
+        return child;
+    }
+
+    public void setChild(int child) {
+        this.child = child;
     }
 
     @Override
