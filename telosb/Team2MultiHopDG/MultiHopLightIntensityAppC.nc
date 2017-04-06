@@ -9,7 +9,7 @@
  */
 
 
-configuration MultihopLightIntensityAppC { }
+configuration MultiHopLightIntensityAppC { }
 implementation {
   components MainC, MultiHopLightIntensityC, LedsC, new TimerMilliC(), new HamamatsuS1087ParC() as Sensor;
 
@@ -31,6 +31,8 @@ implementation {
     new CollectionSenderC(AM_OSCILLOSCOPE), // Sends multihop RF
     SerialActiveMessageC,                   // Serial messaging
     new SerialAMSenderC(AM_OSCILLOSCOPE);   // Sends to the serial port
+  
+  components CtpP as Ctp;
 
   MultiHopLightIntensityC.RadioControl -> ActiveMessageC;
   MultiHopLightIntensityC.SerialControl -> SerialActiveMessageC;
@@ -58,5 +60,8 @@ implementation {
   DebugSender.MessagePool -> DebugMessagePool;
   DebugSender.SendQueue -> DebugSendQueue;
   Collector.CollectionDebug -> DebugSender;
+
+  MultiHopLightIntensityC.CtpInfo -> Ctp;
+  MultiHopLightIntensityC.LinkEstimator -> Ctp;
 
 }

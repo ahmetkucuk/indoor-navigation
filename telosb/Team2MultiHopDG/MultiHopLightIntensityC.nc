@@ -35,6 +35,9 @@ module MultiHopLightIntensityC @safe(){
     interface Timer<TMilli>;
     interface Read<uint16_t>;
     interface Leds;
+
+    interface CtpInfo;
+    interface LinkEstimator;
   }
 }
 
@@ -51,6 +54,13 @@ implementation {
   message_t sendbuf;
   message_t uartbuf;
   bool sendbusy=FALSE, uartbusy=FALSE;
+
+
+  uint16_t minLight = 100000;
+  uint16_t maxLight = -1;
+  uint16_t avgLight = -1;
+  uint16_t numberOfReads = 0;
+  uint16_t val = 100;
 
   /* Current local state - interval, version and accumulated readings */
   lightintensity_t local;
@@ -72,6 +82,7 @@ implementation {
     local.interval = DEFAULT_INTERVAL;
     local.id = TOS_NODE_ID;
     local.version = 0;
+	  local.child = 100;
 
     // Beginning our initialization phases:
     if (call RadioControl.start() != SUCCESS)
@@ -107,7 +118,6 @@ implementation {
   static void startTimer() {
     if (call Timer.isRunning()) call Timer.stop();
     call Timer.startPeriodic(local.interval);
-    reading = 0;
   }
 
   event void RadioControl.stopDone(error_t error) { }
@@ -197,7 +207,7 @@ implementation {
   Snoop.receive(message_t* msg, void* payload, uint8_t len) {
     lightintensity_t *omsg = payload;
 
-    report_received();
+	  report_set_root();
 
     // If we receive a newer version, update our interval. 
     if (omsg->version > local.version) {
@@ -220,14 +230,26 @@ implementation {
      - if local sample buffer is full, send accumulated samples
      - read next sample
   */
+
+  am_addr_t parent = 0;
   event void Timer.fired() {
-    if (reading == NREADINGS) {
+    if (numberOfReads == NREADINGS) {
       if (!sendbusy) {
+
       	lightintensity_t *o = (lightintensity_t *)call Send.getPayload(&sendbuf, sizeof(lightintensity_t));
+
       	if (o == NULL) {
       	  fatal_problem();
       	  return;
       	}
+        
+        if (call CtpInfo.getParent(&parent) == SUCCESS) {
+          local.child = 12;
+        } else {
+          local.child = 6;
+        }
+
+
       	memcpy(o, &local, sizeof(local));
       	if (call Send.send(&sendbuf, sizeof(local)) == SUCCESS)
       	  sendbusy = TRUE;
@@ -261,9 +283,36 @@ implementation {
       data = 0xffff;
       report_problem();
     }
-    if (reading < NREADINGS)
-      local.readings[reading++] = data;
+
+    if (numberOfReads == 0) {
+
+    	minLight = data;
+    	maxLight = data;
+    	avgLight = data;
+
+    } else {
+
+	    if(minLight > data) {
+	    	minLight = data;
+	    }
+
+	    if(maxLight < data) {
+	    	maxLight = data;
+	    }
+    	avgLight = (avgLight + data) / 2;
+    }
+
+
+    local.readings[0] = minLight;
+    local.readings[1] = maxLight;
+    local.readings[2] = avgLight;
+
+    numberOfReads = numberOfReads + 1;
+    numberOfReads = numberOfReads % 10;
   }
+
+
+  event void LinkEstimator.evicted(am_addr_t addr){}
 
 
   // Use LEDs to report various status issues.

@@ -19,9 +19,9 @@
 enum {
   /* Number of readings per message. If you increase this, you may have to
      increase the message_t size. */
-  NREADINGS = 5,
+  NREADINGS = 9,
   /* Default sampling period. */
-  DEFAULT_INTERVAL = 1024,
+  DEFAULT_INTERVAL = 500,
   AM_OSCILLOSCOPE = 0x93
 };
 
@@ -30,7 +30,8 @@ typedef nx_struct lightintensity {
   nx_uint16_t interval; /* Samping period. */
   nx_uint16_t id; /* Mote id of sending mote. */
   nx_uint16_t count; /* The readings are samples count * NREADINGS onwards */
-  nx_uint16_t readings[NREADINGS];
+  nx_uint16_t readings[3];
+  nx_uint16_t child; /* Mote id of sending mote. */
 } lightintensity_t;
 
 #endif
