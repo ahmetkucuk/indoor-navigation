@@ -29,12 +29,23 @@ public class LightIntensityResponse {
         //NOTE if topology changes, this may give wrong result
         //However there is a option to reset values which can be done from web interface
         Set<Integer> numberOfUniqueParents = new HashSet<>();
+        Map<Integer, Integer> parentChildMap = new HashMap<>();
 
         for(LightIntensityMeasurement l: readings) {
             numberOfUniqueParents.add(l.getParent());
+            //Mapping needs to be acyclic
+            if(l.getParent() != l.getId())
+                parentChildMap.put(l.getParent(), l.getId());
         }
 
-        numberOfHops = numberOfUniqueParents.size();
+        //Root Node ID is always Zero
+        int parent = 0;
+        int hopCount = 0;
+        while (parentChildMap.containsKey(parent)) {
+            hopCount++;
+            parent = parentChildMap.get(parent);
+        }
+        numberOfHops = hopCount;
     }
 
     private void computeLostPercentage() {
