@@ -1,84 +1,102 @@
 package core.model;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
- * Created by ahmet on 3/31/17.
+ * Created by ahmet on 4/7/17.
  */
 public class LightIntensityResponse {
 
-    private int version;
-    private int interval;
-    private int id;
-    private int child;
-    private int count;
-    private int[] readings;
-    private long createdAt;
+    private int numberOfHops;
+    private int lostPercentage;
+    private List<LightIntensityMeasurement> readings;
 
-    public int getVersion() {
-        return version;
+    public LightIntensityResponse(List<LightIntensityMeasurement> readings) {
+        this.readings = readings;
+        computeNumberOfHops();
+        computeLostPercentage();
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    private void computeNumberOfHops() {
+
+        if(readings.size() == 0) {
+            numberOfHops = 0;
+            return;
+        }
+
+
+        //Count Number of parent to find number of hops
+        //NOTE if topology changes, this may give wrong result
+        //However there is a option to reset values which can be done from web interface
+        Set<Integer> numberOfUniqueParents = new HashSet<>();
+
+        for(LightIntensityMeasurement l: readings) {
+            numberOfUniqueParents.add(l.getParent());
+        }
+
+        numberOfHops = numberOfUniqueParents.size();
     }
 
-    public int getInterval() {
-        return interval;
+    private void computeLostPercentage() {
+        if(readings.size() == 0) {
+            lostPercentage = 0;
+            return;
+        }
+        //Find Packet with max count
+        int maxCount = 0;
+        int minCount = Integer.MAX_VALUE;
+
+        Set<Integer> allUniquePackets = new HashSet<>();
+        for(LightIntensityMeasurement l: readings) {
+            if(maxCount < l.getCount()) {
+                maxCount = l.getCount();
+            }
+
+            if(minCount > l.getCount()) {
+                minCount = l.getCount();
+            }
+
+            allUniquePackets.add(l.getCount());
+        }
+        if(maxCount == minCount) {
+            lostPercentage = 0;
+            return;
+        }
+
+        int lostCount = 0;
+        for(int i = minCount; i < maxCount; i++) {
+            if(!allUniquePackets.contains(i)) {
+                lostCount++;
+            }
+        }
+
+
+        //Divide number of arrived packet with number of packets at hand
+        lostPercentage = (int)(((double)(lostCount)/(double)readings.size()) * 100);
     }
 
-    public void setInterval(int interval) {
-        this.interval = interval;
+
+    public int getNumberOfHops() {
+        return numberOfHops;
     }
 
-    public int getId() {
-        return id;
+    public void setNumberOfHops(int numberOfHops) {
+        this.numberOfHops = numberOfHops;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getLostPercentage() {
+        return lostPercentage;
     }
 
-    public int getCount() {
-        return count;
+    public void setLostPercentage(int lostPercentage) {
+        this.lostPercentage = lostPercentage;
     }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public int[] getReadings() {
+    public List<LightIntensityMeasurement> getReadings() {
         return readings;
     }
 
-    public void setReadings(int[] readings) {
+    public void setReadings(List<LightIntensityMeasurement> readings) {
         this.readings = readings;
-    }
-
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public int getChild() {
-        return child;
-    }
-
-    public void setChild(int child) {
-        this.child = child;
-    }
-
-    @Override
-    public String toString() {
-        return "LightIntensityResponse{" +
-                "version=" + version +
-                ", interval=" + interval +
-                ", id=" + id +
-                ", count=" + count +
-                ", readings=" + Arrays.toString(readings) +
-                '}';
     }
 }

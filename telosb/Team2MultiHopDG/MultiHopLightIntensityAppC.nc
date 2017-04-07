@@ -64,4 +64,7 @@ implementation {
   MultiHopLightIntensityC.CtpInfo -> Ctp;
   MultiHopLightIntensityC.LinkEstimator -> Ctp;
 
+  components RandomC;
+  MultiHopLightIntensityC.Random -> RandomC; 
+
 }

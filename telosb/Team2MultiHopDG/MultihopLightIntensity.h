@@ -17,8 +17,7 @@
 #define MULTIHOP_INTENSITY_H
 
 enum {
-  /* Number of readings per message. If you increase this, you may have to
-     increase the message_t size. */
+  /* Number of readings per to be done before sending the values*/
   NREADINGS = 9,
   /* Default sampling period. */
   DEFAULT_INTERVAL = 500,
@@ -31,7 +30,8 @@ typedef nx_struct lightintensity {
   nx_uint16_t id; /* Mote id of sending mote. */
   nx_uint16_t count; /* The readings are samples count * NREADINGS onwards */
   nx_uint16_t readings[3];
-  nx_uint16_t child; /* Mote id of sending mote. */
+  nx_uint16_t parent; /* ParentMote id of sending mote. */
+  nx_uint16_t secret; /* Random Secret of sending mote. */
 } lightintensity_t;
 
 #endif

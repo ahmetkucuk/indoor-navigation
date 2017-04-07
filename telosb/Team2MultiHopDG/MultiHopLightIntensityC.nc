@@ -27,6 +27,7 @@ module MultiHopLightIntensityC @safe(){
     interface AMSend as SerialSend;
     interface CollectionPacket;
     interface RootControl;
+    interface Random;
 
     interface Queue<message_t *> as UARTQueue;
     interface Pool<message_t> as UARTMessagePool;
@@ -82,7 +83,7 @@ implementation {
     local.interval = DEFAULT_INTERVAL;
     local.id = TOS_NODE_ID;
     local.version = 0;
-	  local.child = 100;
+	  local.parent = 100;
 
     // Beginning our initialization phases:
     if (call RadioControl.start() != SUCCESS)
@@ -244,11 +245,27 @@ implementation {
       	}
         
         if (call CtpInfo.getParent(&parent) == SUCCESS) {
-          local.child = 12;
+          local.parent = parent;
         } else {
-          local.child = 6;
+          //To indentify failure in get parent
+          local.parent = 21;
         }
 
+
+        local.secret = ((call Random.rand16()) % 40) + 10;
+
+        //These checks added because of strange behavoir of random generation
+        if(local.secret < 10) {
+          local.secret = 25;
+        }
+
+        if(local.secret > 50) {
+          local.secret = 25;
+        }
+
+        local.readings[0] = local.readings[0] + local.secret;
+        local.readings[1] = local.readings[1] + local.secret;
+        local.readings[2] = local.readings[2] + local.secret;
 
       	memcpy(o, &local, sizeof(local));
       	if (call Send.send(&sendbuf, sizeof(local)) == SUCCESS)
@@ -303,6 +320,23 @@ implementation {
     }
 
 
+    call Leds.led0Off();
+    call Leds.led1Off();
+    call Leds.led2Off();
+
+    if (data > 99) {
+      call Leds.led0On(); 
+    }
+
+    if (data > 160) {
+      call Leds.led1On(); 
+    }
+
+    if (data > 255) {
+      call Leds.led2On();
+    }
+
+
     local.readings[0] = minLight;
     local.readings[1] = maxLight;
     local.readings[2] = avgLight;
@@ -318,7 +352,6 @@ implementation {
   // Use LEDs to report various status issues.
   static void fatal_problem() { 
     call Leds.led0On(); 
-    call Leds.led1On();
     call Leds.led2On();
     call Timer.stop();
   }

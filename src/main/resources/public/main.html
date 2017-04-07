@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title></title>
@@ -22,7 +22,7 @@
                 data: {
                     sortKey: 'createdAt',
                     message: 'Hello Vue!',
-                    intensityValues: [],
+                    intensityResponse: {},
                 },
 
                 methods: {
@@ -30,12 +30,21 @@
 
                         this.$http.get('/api/data').then(function(response) {
 
-                            this.intensityValues = Object.assign({}, this.intensityValues, response.data.reverse())
+                            this.intensityResponse = Object.assign({}, this.intensityResponse, response.data)
+                            this.intensityResponse.readings = this.intensityResponse.readings.reverse();
 
                         }, function(response) {
                               console.log("in error: " + response)
                         });
+                    },
+                    reset: function (event) {
+                        this.$http.get('/api/reset').then(function(response) {
+                            console.log(response);
+                        }, function(response) {
+                            console.log("in error: " + response)
+                        });
                     }
+
                 },
                 created: function () {
                     this.getValues();
@@ -52,26 +61,32 @@
 <body>
 <div class="container" id="app">
     <div>
-
+        <h1>Number of Hops: {{ intensityResponse.numberOfHops}}</h1>
+        <h1>Lost Percentage: {{ intensityResponse.lostPercentage}}</h1>
+        <button class="btn btn-default" v-on:click="reset">Reset Values</button>
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
-                <th class="col-sm-2">Version</th>
-                <th class="col-sm-2">interval</th>
-                <th class="col-sm-2">id</th>
-                <th class="col-sm-2">child</th>
-                <th class="col-sm-2">count</th>
-                <th class="col-sm-4">Intensity Values</th>
+                <th class="col-sm-1">Version</th>
+                <th class="col-sm-1">Interval</th>
+                <th class="col-sm-1">ID</th>
+                <th class="col-sm-1">Parent</th>
+                <th class="col-sm-1">Count</th>
+                <th class="col-sm-1">Int. Min</th>
+                <th class="col-sm-1">Int. Max</th>
+                <th class="col-sm-1">Int. Avg</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="intensity in intensityValues">
+            <tr v-for="intensity in intensityResponse.readings">
                 <td>{{ intensity.version }}</td>
                 <td>{{ intensity.interval }}</td>
                 <td>{{ intensity.id }}</td>
-                <td>{{ intensity.child }}</td>
+                <td>{{ intensity.parent }}</td>
                 <td>{{ intensity.count }}</td>
-                <td>{{ intensity.readings }}</td>
+                <td>{{ intensity.readings[0] }}</td>
+                <td>{{ intensity.readings[1] }}</td>
+                <td>{{ intensity.readings[2] }}</td>
             </tr>
             </tbody>
         </table>
