@@ -254,14 +254,6 @@ implementation {
 
         local.secret = ((call Random.rand16()) % 40) + 10;
 
-        //These checks added because of strange behavoir of random generation
-        if(local.secret < 10) {
-          local.secret = 25;
-        }
-
-        if(local.secret > 50) {
-          local.secret = 25;
-        }
 
         local.readings[0] = local.readings[0] + local.secret;
         local.readings[1] = local.readings[1] + local.secret;
