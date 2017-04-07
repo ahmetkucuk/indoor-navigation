@@ -48,14 +48,17 @@ public class LightIntensityResponse {
 
         Set<Integer> allUniquePackets = new HashSet<>();
         for(LightIntensityMeasurement l: readings) {
-            if(maxCount < l.getCount()) {
-                maxCount = l.getCount();
-            }
+            if(l.getId() == 0) {
 
-            if(minCount > l.getCount()) {
-                minCount = l.getCount();
-            }
+                if(maxCount < l.getCount()) {
+                    maxCount = l.getCount();
+                }
 
+                if(minCount > l.getCount()) {
+                    minCount = l.getCount();
+                }
+
+            }
             allUniquePackets.add(l.getCount());
         }
         if(maxCount == minCount) {

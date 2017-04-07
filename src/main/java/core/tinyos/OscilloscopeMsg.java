@@ -258,7 +258,7 @@ public class OscilloscopeMsg extends net.tinyos.message.Message {
      * Return the offset (in bits) of the field 'interval'
      */
     public static int offsetBits_secret() {
-        return 7 * 18;
+        return 8 * 16;
     }
 
     /**
