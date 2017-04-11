@@ -1,0 +1,1 @@
+There is not special process to run telosb code.

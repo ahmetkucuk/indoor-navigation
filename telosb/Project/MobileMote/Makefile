@@ -1,0 +1,2 @@
+COMPONENT=OneHopDGAppC
+include $(MAKERULES)

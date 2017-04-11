@@ -1,0 +1,17 @@
+Compiling and installing steps for telosb
+
+1. Start process as administrator: sudo su
+2. Compile
+
+#!/bin/bash
+rm -r build/telosb/
+mkdir build/telosb/
+ncc -o build/telosb/main.exe -Os -O -mmpy=none -Wall -Wshadow -DDEF_TOS_AM_GROUP=0x7d -Wnesc-all -target=telosb -fnesc-cfile=build/telosb/app.c -board=	BlinkAppC.nc -lm
+msp430-objcopy --output-target=ihex build/telosb/main.exe build/telosb/main.ihex
+
+3. motelist
+4. chmod 666 usb-device-name
+5. make telosb reinstall bsl,/dev/ttyUSB2 # Linux example
+6. Listening Serial Port
+	a.) export MOTECOM=serial@/dev/ttyUSB0:telos
+	b.) java net.tinyos.tools.Listen
