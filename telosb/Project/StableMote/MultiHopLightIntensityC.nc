@@ -193,20 +193,6 @@ implementation {
 
   event void Timer.fired()
   {
-    if (!sendbusy) {
-      navigation_t *o = (navigation_t *)call Send.getPayload(&sendbuf, sizeof(navigation_t));
-
-      if (o == NULL) {
-        fatal_problem();
-        return;
-      }
-
-      memcpy(o, &local, sizeof(local));
-      if (call Send.send(&sendbuf, sizeof(local)) == SUCCESS)
-        sendbusy = TRUE;
-      else
-        report_problem();
-    }
   }
 
   event message_t* NavReceiver.receive(message_t* msg, void* payload, uint8_t len) {
@@ -220,7 +206,7 @@ implementation {
         }
 
         if (call CtpInfo.getParent(&parent) == SUCCESS) {
-          local.parent = parent;
+          local.parent = ((mobile_mote_msg_t *)o)->id;
         } else {
           //To indentify failure in get parent
           local.parent = 21;

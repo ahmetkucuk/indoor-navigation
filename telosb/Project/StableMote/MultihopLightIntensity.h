@@ -22,6 +22,11 @@ enum {
   AM_NAVIGATION = 0x94
 };
 
+typedef nx_struct mobile_mote_msg {
+  nx_uint16_t error;
+  nx_uint16_t id;
+} mobile_mote_msg_t;
+
 typedef nx_struct navigation {
   nx_uint16_t id; /* Mote id of sending mote. */
   nx_uint16_t count; /* The readings are samples count * NREADINGS onwards */

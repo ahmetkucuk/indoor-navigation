@@ -71,7 +71,7 @@ implementation
 
   event void RadioControl.startDone(error_t err) {
     if (err == SUCCESS) {
-        call Timer.startPeriodic( 5000 );
+        call Timer.startPeriodic( 500 );
     }
   }
 

@@ -1,13 +1,13 @@
 <tos_image>
   <ident>
-    <timestamp>58ED69C6L</timestamp>
-    <deluge_support>no</deluge_support>
-    <hostname>ASCSC-640G</hostname>
+    <timestamp>58EEA4D9L</timestamp>
     <userhash>9DF359D5L</userhash>
-    <platform>telosb</platform>
-    <uidhash>35C67E1AL</uidhash>
     <appname>OneHopDGAppC</appname>
+    <deluge_support>no</deluge_support>
     <username>root</username>
+    <platform>telosb</platform>
+    <hostname>ASCSC-640G</hostname>
+    <uidhash>E4D033BEL</uidhash>
   </ident>
   <image format="ihex">
 :104000005542200135D0085A8245641231400039AA

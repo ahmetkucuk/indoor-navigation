@@ -2,6 +2,8 @@ package core.tinyos;
 
 import core.model.LightIntensityMeasurement;
 import core.model.LightIntensityResponse;
+import core.model.NavigationNotification;
+import core.model.NavigationResponse;
 import net.tinyos.message.Message;
 import net.tinyos.message.MessageListener;
 import net.tinyos.message.MoteIF;
@@ -15,14 +17,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Listen implements MessageListener{
 
-	private final List<LightIntensityMeasurement> values = new ArrayList<>();
+	private final List<NavigationNotification> values = new ArrayList<>();
 
 
 	public Listen() {
 		try {
 			PhoenixSource reader = BuildSource.makePhoenix("serial@/dev/ttyUSB0:telos", PrintStreamMessenger.err);
 			MoteIF mote = new MoteIF(reader);
-			mote.registerListener(new OscilloscopeMsg(), this);
+			mote.registerListener(new NavigationMsg(), this);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -30,17 +32,15 @@ public class Listen implements MessageListener{
 
 	@Override
 	public void messageReceived(int i, Message message) {
-		if(message instanceof OscilloscopeMsg) {
-			OscilloscopeMsg oMessage = (OscilloscopeMsg)message;
-			values.add(oMessage.toLightIntensityResponse());
+		if(message instanceof NavigationMsg) {
+			NavigationMsg oMessage = (NavigationMsg)message;
+			values.add(oMessage.toNavigationNotification());
+			System.out.println(oMessage.toString());
 		}
 	}
-	public List<LightIntensityMeasurement> getValues() {
-		return values;
-	}
 
-	public LightIntensityResponse getLightIntesityResponse() {
-		return new LightIntensityResponse(values);
+	public NavigationResponse getLightIntesityResponse() {
+		return new NavigationResponse(values);
 	}
 
 	public void resetValues() {
