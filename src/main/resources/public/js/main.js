@@ -47,17 +47,16 @@ window.onload = function () {
                 ctx.closePath();
 
                 var colors = ["#3370d4", "#dc42f4", "#b4e258", "#e8963a"];
-                var colorIndex = 0;
 
                 for(var i = 0; i < this.positions.length; i++) {
                     ctx.beginPath();
                     var x = this.positions[i].x;
                     var y = this.positions[i].y;
-                    ctx.fillStyle = colors[colorIndex];
+                    var id = this.positions[i].mobileId;
+                    ctx.fillStyle = colors[id % 4];
                     ctx.arc(x,y,20,0,2*Math.PI);
                     ctx.fill();
                     ctx.closePath();
-                    colorIndex = (colorIndex + 1) % 4;
                 }
             }
         },

@@ -61,11 +61,13 @@ module OneHopDGC @safe()
 implementation
 {
   message_t packet;
+  nx_uint16_t nodeId;
   bool locked = FALSE;
 
 
   event void Boot.booted()
   {
+    nodeId = TOS_NODE_ID;
     call RadioControl.start();
   }
 
@@ -85,7 +87,7 @@ implementation
     if (rsm == NULL) {
         return;
     }
-    rsm->id = 1;
+    rsm->id = nodeId;
 
     if (call AMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(mobile_mote_msg_t)) == SUCCESS) {
       locked = TRUE;
