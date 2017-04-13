@@ -13,7 +13,7 @@ public class Position {
     static {
         moteIdByPosition = new HashMap<>();
         //1 is UP, 2 is RIGHT, 3 DOWN, 4 LEFT
-        moteIdByPosition.put(1, new Position(1, 100, 170, 570, 1));
+        moteIdByPosition.put(1, new Position(1, 100, 180, 570, 1));
         moteIdByPosition.put(2, new Position(2, 100, 180, 220, 2));
         moteIdByPosition.put(3, new Position(3, 100, 620, 220, 3));
         moteIdByPosition.put(4, new Position(4, 100, 610, 570, 3));

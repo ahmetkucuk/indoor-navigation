@@ -41,7 +41,10 @@ window.onload = function () {
                 var canvas = document.getElementById('canvas'),
                     ctx = canvas.getContext('2d');
                 var image = document.getElementById('source');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
                 ctx.drawImage(image,0,0);
+                ctx.closePath();
 
                 var colors = ["#3370d4", "#dc42f4", "#b4e258", "#e8963a"];
                 var colorIndex = 0;
