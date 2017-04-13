@@ -5,7 +5,7 @@
 typedef nx_struct mobile_mote_msg {
   nx_uint16_t error;
   nx_uint16_t id;
-} mobile_mote_msg;
+} mobile_mote_msg_t;
 
 enum {
   AM_NAVIGATION = 0x94

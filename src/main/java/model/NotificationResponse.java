@@ -1,16 +1,16 @@
-package core.model;
+package model;
 
 import java.util.List;
 
 /**
  * Created by ahmet on 4/12/17.
  */
-public class NavigationResponse {
+public class NotificationResponse {
 
 
     private List<NavigationNotification> notifications;
 
-    public NavigationResponse(List<NavigationNotification> navigationNotification) {
+    public NotificationResponse(List<NavigationNotification> navigationNotification) {
         this.notifications = navigationNotification;
     }
 

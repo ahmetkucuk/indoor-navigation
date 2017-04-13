@@ -3,96 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://cdn.jsdelivr.net/vue.resource/1.2.1/vue-resource.min.js"></script>
+    <script src="/third/jquery.min.js"></script>
+    <script src="/third/vue/vue@2.2.6.js"></script>
+    <script src="/third/vue/vue-resource.min.js"></script>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="/third/bootstrap/bootstrap.min.css">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="/third/bootstrap/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/main.css">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-    <script>
-        window.onload = function () {
-            var app = new Vue({
-                el: '#app',
-                data: {
-                    sortKey: 'createdAt',
-                    message: 'Hello Vue!',
-                    intensityResponse: {},
-                },
-
-                methods: {
-                    getValues: function() {
-
-                        this.$http.get('/api/data').then(function(response) {
-
-                            this.intensityResponse = Object.assign({}, this.intensityResponse, response.data)
-                            this.intensityResponse.readings = this.intensityResponse.readings.reverse();
-
-                        }, function(response) {
-                              console.log("in error: " + response)
-                        });
-                    },
-                    reset: function (event) {
-                        this.$http.get('/api/reset').then(function(response) {
-                            console.log(response);
-                        }, function(response) {
-                            console.log("in error: " + response)
-                        });
-                    }
-
-                },
-                created: function () {
-                    this.getValues();
-
-                    setInterval(function () {
-                        this.getValues();
-                    }.bind(this), 3000);
-                }
-
-            });
-        }
-    </script>
+    <script src="/third/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script>
 </head>
 <body>
+<div style="display:none;">
+    <img id="source" src="/images/NavigationScene1.png"
+         width="800" height="600">
+</div>
 <div class="container" id="app">
-    <div>
-        <h1>Number of Hops: {{ intensityResponse.numberOfHops}}</h1>
-        <h1>Lost Percentage: {{ intensityResponse.lostPercentage}}</h1>
-        <button class="btn btn-default" v-on:click="reset">Reset Values</button>
-        <table class="table table-bordered table-striped">
-            <thead>
-            <tr>
-                <th class="col-sm-1">Version</th>
-                <th class="col-sm-1">Interval</th>
-                <th class="col-sm-1">ID</th>
-                <th class="col-sm-1">Parent</th>
-                <th class="col-sm-1">Count</th>
-                <th class="col-sm-1">Int. Min</th>
-                <th class="col-sm-1">Int. Max</th>
-                <th class="col-sm-1">Int. Avg</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="intensity in intensityResponse.readings">
-                <td>{{ intensity.version }}</td>
-                <td>{{ intensity.interval }}</td>
-                <td>{{ intensity.id }}</td>
-                <td>{{ intensity.parent }}</td>
-                <td>{{ intensity.count }}</td>
-                <td>{{ intensity.readings[0] }}</td>
-                <td>{{ intensity.readings[1] }}</td>
-                <td>{{ intensity.readings[2] }}</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="col-md-9">
+            <canvas id="canvas" width="800" height="600"></canvas>
+        </div>
+        <div class="col-md-3">
+                <button class="btn btn-default" v-on:click="reset">Reset Values</button>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th class="col-md-3">ID</th>
+                        <th class="col-md-3">Parent</th>
+                        <th class="col-md-3">Count</th>
+                        <th class="col-md-3">MobileID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="intensity in notificationResponse.notifications">
+                        <td>{{ intensity.id }}</td>
+                        <td>{{ intensity.parent }}</td>
+                        <td>{{ intensity.count }}</td>
+                        <td>{{ intensity.mobileId }}</td>
+                    </tr>
+                    </tbody>
+                </table>
 
+            </div>
     </div>
-
 </div>
 
 </body>

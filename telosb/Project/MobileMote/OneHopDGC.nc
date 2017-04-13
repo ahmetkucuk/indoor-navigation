@@ -80,15 +80,14 @@ implementation
   event void Timer.fired()
   {
       
-    mobile_mote_msg* rsm = (mobile_mote_msg*)call Packet.getPayload(&packet, sizeof(mobile_mote_msg));
+    mobile_mote_msg_t* rsm = (mobile_mote_msg_t*)call Packet.getPayload(&packet, sizeof(mobile_mote_msg_t));
 
     if (rsm == NULL) {
         return;
     }
-    //For security concern, the reading value to be sent = the actual reading value + 50
     rsm->id = 1;
 
-    if (call AMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(mobile_mote_msg)) == SUCCESS) {
+    if (call AMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(mobile_mote_msg_t)) == SUCCESS) {
       locked = TRUE;
     }
     call Leds.led2Toggle();

@@ -1,9 +1,8 @@
 package core.tinyos;
 
-import core.model.LightIntensityMeasurement;
-import core.model.LightIntensityResponse;
-import core.model.NavigationNotification;
-import core.model.NavigationResponse;
+import core.NavigationManager;
+import model.NavigationNotification;
+import model.NotificationResponse;
 import net.tinyos.message.Message;
 import net.tinyos.message.MessageListener;
 import net.tinyos.message.MoteIF;
@@ -13,7 +12,6 @@ import net.tinyos.util.PrintStreamMessenger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Listen implements MessageListener{
 
@@ -36,11 +34,12 @@ public class Listen implements MessageListener{
 			NavigationMsg oMessage = (NavigationMsg)message;
 			values.add(oMessage.toNavigationNotification());
 			System.out.println(oMessage.toString());
+			NavigationManager.getManager().updatePosition(oMessage.toNavigationNotification());
 		}
 	}
 
-	public NavigationResponse getLightIntesityResponse() {
-		return new NavigationResponse(values);
+	public NotificationResponse getNotificationResponse() {
+		return new NotificationResponse(values);
 	}
 
 	public void resetValues() {

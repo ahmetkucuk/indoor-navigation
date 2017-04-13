@@ -1,7 +1,6 @@
 package core.tinyos;
 
-import core.model.LightIntensityMeasurement;
-import core.model.NavigationNotification;
+import model.NavigationNotification;
 
 /**
  * Created by ahmet on 4/11/17.
@@ -131,21 +130,21 @@ public class NavigationMsg extends net.tinyos.message.Message {
      * Return the offset (in bits) of the field 'id'
      */
     public static int offsetBits_id() {
-        return 32;
+        return 0;
     }
 
     /**
      * Return the offset (in bits) of the field 'id'
      */
     public static int offsetBits_parentId() {
-        return 7*16;
+        return 3*16;
     }
 
     /**
      * Return the offset (in bits) of the field 'id'
      */
     public static int offsetBits_mobile_moteId() {
-        return 7*16;
+        return 2*16;
     }
 
 
@@ -205,7 +204,7 @@ public class NavigationMsg extends net.tinyos.message.Message {
      * Return the offset (in bits) of the field 'count'
      */
     public static int offsetBits_count() {
-        return 48;
+        return 1*16;
     }
 
     /**

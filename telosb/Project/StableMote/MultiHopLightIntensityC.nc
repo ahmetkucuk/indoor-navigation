@@ -198,6 +198,7 @@ implementation {
   event message_t* NavReceiver.receive(message_t* msg, void* payload, uint8_t len) {
 	report_received();
     if (!sendbusy) {
+	    mobile_mote_msg_t *omsg = payload;
         navigation_t *o = (navigation_t *)call Send.getPayload(&sendbuf, sizeof(navigation_t));
 
         if (o == NULL) {
@@ -206,11 +207,12 @@ implementation {
         }
 
         if (call CtpInfo.getParent(&parent) == SUCCESS) {
-          local.parent = ((mobile_mote_msg_t *)o)->id;
+          local.parent = parent;
         } else {
           //To indentify failure in get parent
           local.parent = 21;
         }
+        local.mobile_mote_id = omsg->id;
 
         memcpy(o, &local, sizeof(local));
         if (call Send.send(&sendbuf, sizeof(local)) == SUCCESS)
@@ -232,7 +234,8 @@ implementation {
 
   // Use LEDs to report various status issues.
   static void fatal_problem() { 
-    call Leds.led0On(); 
+    call Leds.led0On();
+    call Leds.led1On();
     call Leds.led2On();
   }
 
