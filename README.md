@@ -11,3 +11,5 @@ After this, all you need is running Controller.java
 Be aware that your base station needs to be connected to /dev/ttyUSB0 (or change it from Listen.java)
 
 Make sure that you give permission to /dev/ttyUSB0 e.g. chmod 666 /dev/ttyUSB0
+
+Additionally you can use extracted jar file under target folder.
